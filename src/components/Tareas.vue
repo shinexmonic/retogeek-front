@@ -76,23 +76,60 @@ export default {
   methods: {
     listarTareas()
     {
-      axios.get('http://retogeek-api.test/api/listarTareas/'+this.tipoTarea).then((response) => {
+      axios.get(
+          'http://localhost/reto-geek/public/api/listarTareas',
+          {
+            headers: {
+              Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3RcL3JldG8tZ2Vla1wvcHVibGljXC9hcGlcL2NyZWFyVG9rZW4iLCJpYXQiOjE2NTA3MzIwNzYsImV4cCI6MTY1MDczNTY3NiwibmJmIjoxNjUwNzMyMDc2LCJqdGkiOiJMbmZTUnZJNDBRZ3V4NzdNIiwic3ViIjoxLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.tvfp7kdgVGdEr2B0HIq_VbbLCpVRw52IviDB7B5NlBk',
+              'Access-Control-Allow-Origin': '*',
+              'Content-Type': 'application/json',
+            }
+          }
+        ).then((response) => {
         this.tareas = response.data.data;
-      }) 
+      })
     },
     listarTrabajadores()
     {
-      axios.get('http://retogeek-api.test/api/user/').then((response) => {
+      axios.get(
+          'http://localhost/reto-geek/public/api/user',
+          {
+            headers: {
+              Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3RcL3JldG8tZ2Vla1wvcHVibGljXC9hcGlcL2NyZWFyVG9rZW4iLCJpYXQiOjE2NTA3MzE5MDEsImV4cCI6MTY1MDczNTUwMSwibmJmIjoxNjUwNzMxOTAxLCJqdGkiOiJ5OGlqSmdrNktwRURmczRiIiwic3ViIjoxLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.Z9zkWDh40yz9bDMLwdWFjQKl70J2AU7tjEcuovtUnpw',
+              'Access-Control-Allow-Origin': '*',
+              'Content-Type': 'application/json',
+            }
+          }
+        ).then((response) => {
         this.trabajadores = response.data.data;
       });
 
-      axios.get('http://retogeek-api.test/api/listarTrabajadores/').then((response) => {
+      axios.get(
+          'http://localhost/reto-geek/public/api/listarTrabajadores/',
+          {
+            headers: {
+              Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3RcL3JldG8tZ2Vla1wvcHVibGljXC9hcGlcL2NyZWFyVG9rZW4iLCJpYXQiOjE2NTA3MzE5MDEsImV4cCI6MTY1MDczNTUwMSwibmJmIjoxNjUwNzMxOTAxLCJqdGkiOiJ5OGlqSmdrNktwRURmczRiIiwic3ViIjoxLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.Z9zkWDh40yz9bDMLwdWFjQKl70J2AU7tjEcuovtUnpw',
+              'Access-Control-Allow-Origin': '*',
+              'Content-Type': 'application/json',
+            }
+          }
+        ).then((response) => {
         this.trabajadores = response.data.data;
       })
     },
     listarDependencias()
     {
-      axios.get('http://retogeek-api.test/api/listarDependencias/').then((response) => {
+      axios.get(
+          'http://localhost/reto-geek/public/api/listarDependencias/',
+          {
+            headers: {
+              Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3RcL3JldG8tZ2Vla1wvcHVibGljXC9hcGlcL2NyZWFyVG9rZW4iLCJpYXQiOjE2NTA3MzE5MDEsImV4cCI6MTY1MDczNTUwMSwibmJmIjoxNjUwNzMxOTAxLCJqdGkiOiJ5OGlqSmdrNktwRURmczRiIiwic3ViIjoxLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.Z9zkWDh40yz9bDMLwdWFjQKl70J2AU7tjEcuovtUnpw',
+              'Access-Control-Allow-Origin': '*',
+              'Content-Type': 'application/json',
+            },
+            mode: 'no-cors',
+          }
+        ).then((response) => {
         this.dependencias = response.data.data;
       })  
     }

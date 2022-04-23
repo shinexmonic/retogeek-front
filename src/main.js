@@ -28,6 +28,8 @@ import axios from "axios";
 Vue.use(BootstrapVue)
 
 window.axios = axios;
+window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.axios.defaults.headers["Access-Control-Allow-Origin"] = "*";
 
 Vue.use(IconsPlugin)
 
