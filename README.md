@@ -1,47 +1,45 @@
 # [Vue Paper Dashboard](https://cristijora.github.io/vue-paper-dashboard/)
 
-> Admin dashboard based on paper dashboard UI template + vue-router
+# RETO DENTOS
+_Reto Geek._
 
-This project is a vue version of [Paper-dashboard](https://www.creative-tim.com/product/paper-dashboard)
-designed for vue js.The dashboard includes vue-router
+## Comenzando 🚀
 
-Check the [Live Demo here](https://cristijora.github.io/vue-paper-dashboard).
+### Descarga 📥 
 
-[Nuxt Version (outdated Bootstrap 3)](https://github.com/cristijora/vue-paper-dashboard-nuxt)
-![](http://i.imgur.com/3iC1hOs.gif)
+_Para descargar esté proyecto debes seguir los siguientes pasos:_
 
-## Documentation
-Link to [Documentation](http://vuejs.creative-tim.com/vue-paper-dashboard/documentation/)
+*  Hacer un **FORK** de esté repositorio. (UNA VEZ)
 
-## Build Setup
+*  Copiar la url del botón clonar.
 
-### install dependencies
+_En la carpeta /www del Laragon - WAMP ó en la /htdocs del XAMPP, abrir **Git Bash** y ejecutar:_
+
+``` bash
+git clone 'url_copiada';
+```
+
+*  Copiar la url del botón clonar en el repositorio original o del grupo.
+
+*  Agregar vinculo a upstream **remota** en el repositorio local. (UNA VEZ)
+
+``` bash
+git remote add upstream 'url_copiada';
+```
+
+### Configuración del proyecto ⚙️
+
+### instalar dependencias ⚙️
 ```
 npm install
 ```
-### serve with hot reload at localhost:8080
+### cargar servidor en localhost:8080
 ```
 npm run dev
 ```
-### build for production with minification
-```
-npm run build
-```
-### lint
-```
-npm run lint
-```
-## Contribution guide
-* Fork the repository
-* `npm install` or `yarn install`
-* Make changes
-* Open Pull Request
-
-For detailed explanation on how things work, checkout the [guide](https://github.com/vuejs/vue-cli/blob/dev/docs/README.md)
-- [CHANGELOG](./CHANGELOG.md)
-- [version-badge](https://img.shields.io/badge/version-2.0.0-blue.svg)
-- [license-badge](https://img.shields.io/badge/license-MIT-blue.svg)
-
 ## License
 
 [MIT](https://github.com/creativetimofficial/vue-paper-dashboard/blob/master/LICENSE.md)
+
+---
+Muchas gracias. 
