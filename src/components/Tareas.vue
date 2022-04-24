@@ -1,7 +1,7 @@
 <template>
  <div>
    <div class="container-fluid">
-    <div>
+    <div class="d-flex justify-content-end">
     <!-- Button trigger modal -->
       <b-button class="btn-primary" v-b-modal.dependencias>Agregar Dependencia</b-button>
       <b-button class="btn-primary" v-b-modal.trabajador>Agregar Trabajador</b-button>
@@ -119,20 +119,48 @@
   <br>
   <div class="row d-flex justify-content-center">
     <br>
-    <card v-for="tarea in tareas" style="width:60%">
+    <card v-for="(tarea,index) in tareas" style="width:60%">
       <div>
         <div class="row">
           <div class="col col-md-6">
-            <h5 class="card-title">{{'Tarea '+tipoTarea+' | '+tarea.persona}}</h5>
+            <h5 class="card-title">{{'Tarea '+(index+1)+' - '+tarea.persona}}</h5>
           </div>
-          <div class="col col-md-6">
+          <div class="col col-md-6" style="text-align:end">
             <b-button class="btn-primary" v-show="tipoTarea == 'pendiente'" v-b-modal.cambiarEstado @click="cambiaIdTarea(tarea.id)">Cambiar Estado</b-button>
           </div>
         </div>
-        <h6 class="card-subtitle mb-2 text-muted">{{'Fecha Limite '+tarea.fecha_limite}}</h6>
-        {{tarea.descripcion}}
+        <div>
+          {{tarea.descripcion}}
+        </div>
+        <div class="d-flex justify-content-end">
+          <br>
+          {{tarea.dependencia+' | '+tarea.fecha_limite}}
+        </div>
       </div>
     </card>
+  </div>
+  
+  <div class="d-flex justify-content-end">
+    <template v-if="pagination.current_page>1">
+      <p>Nota: La paginación se muestra después de 3 tareas</p>
+    </template>
+    <template>    
+      <div class="form-group">
+        <nav>
+            <ul class="pagination">
+                <li class="page-item" v-if="pagination.current_page > 1">
+                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
+                </li>
+                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
+                </li>
+                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
+                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
+                </li>
+            </ul>
+        </nav>
+      </div>
+    </template>
   </div>
 </div>
 </template>
@@ -142,6 +170,7 @@ export default {
   name: "Tareas",
   props: ['tipoTarea'],
   data() {
+    let token = 'jola';
     return {
       tareas: [],
       trabajadores: [],
@@ -152,11 +181,61 @@ export default {
       cargos: [],
       inputTarea: {},
       inputEstado: {},
-      idTarea: '',
-      token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3RcL3JldG8tZ2Vla1wvcHVibGljXC9hcGlcL2NyZWFyVG9rZW4iLCJpYXQiOjE2NTA4MDkwMzEsImV4cCI6MTY1MDgxMjYzMSwibmJmIjoxNjUwODA5MDMxLCJqdGkiOiIwV3RaV1VoT0VDdmVuSlNwIiwic3ViIjoxLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.PeqpYsPINF-2q2wi998_Q-7qBmKd0FCujzLSW0aOjjk'
+      offset : 3,
+      host: 'http://localhost/reto-geek/public',
+      pagination : {
+          'total' : 0,
+          'current_page' : 0,
+          'per_page' : 0,
+          'last_page' : 0,
+          'from' : 0,
+          'to' : 0,
+      },
+      headers: {
+        headers: {
+          Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3RcL3JldG8tZ2Vla1wvcHVibGljXC9hcGlcL2NyZWFyVG9rZW4iLCJpYXQiOjE2NTA4MTE0NTYsImV4cCI6MTY1MDgxNTA1NiwibmJmIjoxNjUwODExNDU2LCJqdGkiOiI2TFE5ckU5Y1diUzBERFdoIiwic3ViIjoxLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.zm6qq9TEi_uCgpRxd3O_NuyCzX5rnGB_mGTisLjYHcw',
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json',
+        }
+      }
     };
   },
+  computed:{ // Almacenamos en Chache la Paginación
+    isActived: function(){
+        return this.pagination.current_page;
+    },
+    //Calcula los elementos de la paginación
+    pagesNumber: function() {
+        if(!this.pagination.to) {
+            return [];
+        }
+        
+        var from = this.pagination.current_page - this.offset; 
+        if(from < 1) {
+            from = 1;
+        }
+
+        var to = from + (this.offset * 2); 
+        if(to >= this.pagination.last_page){
+            to = this.pagination.last_page;
+        }  
+
+        var pagesArray = [];
+        while(from <= to) {
+            pagesArray.push(from);
+            from++;
+        }
+        return pagesArray;             
+
+    }
+},
   methods: {
+    cambiarPagina(page,buscar,criterio){ // Metodo encargado de realizar el cambio de pagina
+      //Actualiza la página actual
+      this.pagination.current_page = page;
+      //Envia la petición para visualizar la data de esa página
+      this.listarTareas(page);
+    },
     cancelarForm()
     {
       this.errores = [];
@@ -172,43 +251,34 @@ export default {
     registrarEstado()
     {
       axios.post(
-          'http://localhost/reto-geek/public/api/cambiarEstado/tareas',
-            this.inputEstado,
-          {
-            headers: {
-              Authorization: 'Bearer '+this.token,
-              'Access-Control-Allow-Origin': '*',
-              'Content-Type': 'application/json',
-            }
-          }
+          this.host+'/api/cambiarEstado/tareas',
+          this.inputEstado,
+          this.headers
         ).then((response) => {
           if(response.data.status)
           {
             this.$root.$emit('bv::hide::modal','cambiarEstado');
             this.listarDependencias();
             alert('Estado cambiado exitosamente');
-            this.listarTareas();
+            this.listarTareas(1);
           }
           else
           {
             this.errores = response.data.data;
           }
-      })
+      }).catch((error) => {
+        this.crearToken();
+        this.registrarEstado();
+      })  
     },
     registrarDependencia()
     {
       axios.post(
-          'http://localhost/reto-geek/public/api/guardar/dependencias',
+          this.host+'/api/guardar/dependencias',
           {
             "nombre": this.inputDependencia
           },
-          {
-            headers: {
-              Authorization: 'Bearer '+this.token,
-              'Access-Control-Allow-Origin': '*',
-              'Content-Type': 'application/json',
-            }
-          }
+          this.headers
         ).then((response) => {
           if(response.data.status)
           {
@@ -220,20 +290,17 @@ export default {
           {
             this.errores = response.data.data;
           }
-      })
+      }).catch((error) => {
+        this.crearToken();
+        this.registrarDependencia();
+      })  
     },
     registrarTrabajador()
     {
       axios.post(
-          'http://localhost/reto-geek/public/api/guardar/trabajadores',
-            this.inputTrabajador,
-          {
-            headers: {
-              Authorization: 'Bearer '+this.token,
-              'Access-Control-Allow-Origin': '*',
-              'Content-Type': 'application/json',
-            }
-          }
+          this.host+'/api/guardar/trabajadores',
+          this.inputTrabajador,
+          this.headers
         ).then((response) => {
           if(response.data.status)
           {
@@ -245,101 +312,106 @@ export default {
           {
             this.errores = response.data.data;
           }
-      })
+      }).catch((error) => {
+        this.crearToken();
+        this.registrarTrabajador();
+      })  
     },
     registrarTarea(){
       axios.post(
-          'http://localhost/reto-geek/public/api/guardar/tarea',
-            this.inputTarea,
-          {
-            headers: {
-              Authorization: 'Bearer '+this.token,
-              'Access-Control-Allow-Origin': '*',
-              'Content-Type': 'application/json',
-            }
-          }
+          this.host+'/api/guardar/tarea',
+          this.inputTarea,
+          this.headers
         ).then((response) => {
           if(response.data.status)
           {
             this.$root.$emit('bv::hide::modal','tareas');
-            this.listarDependencias();
+            this.listarTareas(1);
             alert('Tarea creada exitosamente');
           }
           else
           {
             this.errores = response.data.data;
           }
+      }).catch((error) => {
+        this.crearToken();
+        this.registrarTarea();
       })      
     },
-    listarTareas()
+    listarTareas(page)
     {
       axios.get(
-          'http://localhost/reto-geek/public/api/listarTareas/'+this.tipoTarea,
-          {
-            headers: {
-              Authorization: 'Bearer '+this.token,
-              'Access-Control-Allow-Origin': '*',
-              'Content-Type': 'application/json',
-            }
-          }
+          this.host+'/api/listarTareas/'+this.tipoTarea+'?page=' + page,
+          this.headers
         ).then((response) => {
-        this.tareas = response.data.data;
-        console.log(this.tareas);
-      })
+          console.log(response);
+          this.pagination = response.data.data.pagination;
+          this.tareas = response.data.data.tareas.data;
+      }).catch((error) => {
+        this.crearToken();
+        this.listarTareas(page);
+      })  
     },
     listarTrabajadores()
     {
       axios.get(
-          'http://localhost/reto-geek/public/api/listarTrabajadores',
-          {
-            headers: {
-              Authorization: 'Bearer '+this.token,
-              'Access-Control-Allow-Origin': '*',
-              'Content-Type': 'application/json',
-            }
-          }
+          this.host+'/api/listarTrabajadores',
+          this.headers
         ).then((response) => {
         this.trabajadores = response.data.data;
-      })
+      }).catch((error) => {
+        this.crearToken();
+        this.listarTrabajadores();
+      })  
     },
     listarDependencias()
     {
       axios.get(
-          'http://localhost/reto-geek/public/api/listarDependencias',
-          {
-            headers: {
-              Authorization: 'Bearer '+this.token,
-              'Access-Control-Allow-Origin': '*',
-              'Content-Type': 'application/json',
-            }
-            //mode: 'no-cors',
-          }
+          this.host+'/api/listarDependencias',
+          this.headers
         ).then((response) => {
           this.dependencias = response.data.data;
-      })  
+      }).catch((error) => {
+        this.crearToken();
+        this.listarDependencias();
+      })    
     },
     listarCargos()
     {
       axios.get(
-          'http://localhost/reto-geek/public/api/listarCargos',
-          {
-            headers: {
-              Authorization: 'Bearer '+this.token,
-              'Access-Control-Allow-Origin': '*',
-              'Content-Type': 'application/json',
-            }
-            //mode: 'no-cors',
-          }
+          this.host+'/api/listarCargos',
+          this.headers
         ).then((response) => {
           this.cargos = response.data.data;
-      })  
+      }).catch((error) => {
+        this.crearToken();
+        this.listarCargos();
+      })    
+    },
+    crearToken()
+    {
+      axios.get(
+          this.host+'/api/crearToken'
+        ).then((response) => {
+          if(response.data.status)
+            this.headers.headers = {
+              Authorization: 'Bearer '+response.data.token,
+              'Access-Control-Allow-Origin': '*',
+              'Content-Type': 'application/json',
+            };
+          else
+            alert('No se pudo crear el token');
+      }).catch((error) => {
+        this.crearToken();
+      })    
     }
   },
   mounted(){
     //console.log('sss', this.tipoTarea);
-    this.listarTareas();
+    this.listarTareas(1);
     this.listarTrabajadores();
     this.listarDependencias();
+    this.crearToken();
     this.listarCargos();
   }
 };
