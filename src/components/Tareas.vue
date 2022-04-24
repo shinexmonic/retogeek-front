@@ -86,13 +86,50 @@
           </div>
         </p>
       </b-modal>
+      <b-modal @hide="cancelarForm" id="cambiarEstado" title="Cambiar Estado">
+        <p class="my-4">
+          <div class="form-group">
+            <label>Observaciones</label>
+            <textarea class="form-control" v-model="inputEstado.observaciones"></textarea>
+            <label>Fecha</label>
+            <input type="date" class="form-control" v-model="inputEstado.fecha">
+            <input type="hidden" class="form-control" v-model="inputEstado.id_tarea">
+            <label>Estado</label>
+            <select v-model="inputEstado.id_estado" class="form-control">
+              <option value="2">Cumplida</option>
+              <option value="3">Incumplida</option>
+            </select>
+            <br>
+            <button class="btn btn-primary" @click="registrarEstado">Guardar</button>
+            <div v-show="Object.keys(errores).length > 0">
+              <br>
+              <div class="alert alert-danger">
+                <ul>
+                  <template v-for="error in errores">
+                    <li v-for="mensaje in error" v-text="mensaje"></li>
+                  </template>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </p>
+      </b-modal>
     </div>
   </div>
   <br>
   <div class="row d-flex justify-content-center">
     <br>
-    <card v-for="tarea in tareas" :title="'Tarea '+tipoTarea+' | '+tarea.persona" :sub-title="'Fecha Limite '+tarea.fecha_limite" style="width:60%">
+    <card v-for="tarea in tareas" style="width:60%">
       <div>
+        <div class="row">
+          <div class="col col-md-6">
+            <h5 class="card-title">{{'Tarea '+tipoTarea+' | '+tarea.persona}}</h5>
+          </div>
+          <div class="col col-md-6">
+            <b-button class="btn-primary" v-show="tipoTarea == 'pendiente'" v-b-modal.cambiarEstado @click="cambiaIdTarea(tarea.id)">Cambiar Estado</b-button>
+          </div>
+        </div>
+        <h6 class="card-subtitle mb-2 text-muted">{{'Fecha Limite '+tarea.fecha_limite}}</h6>
         {{tarea.descripcion}}
       </div>
     </card>
@@ -114,7 +151,9 @@ export default {
       inputTrabajador: {},
       cargos: [],
       inputTarea: {},
-      token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3RcL3JldG8tZ2Vla1wvcHVibGljXC9hcGlcL2NyZWFyVG9rZW4iLCJpYXQiOjE2NTA3NTgyNjUsImV4cCI6MTY1MDc2MTg2NiwibmJmIjoxNjUwNzU4MjY2LCJqdGkiOiJQektnTjlLcEJYNVhOeGZSIiwic3ViIjoxLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.w68gZxOXry6apU_TfwC1m-gFD_SEpqqpqoaeAeQkHb4'
+      inputEstado: {},
+      idTarea: '',
+      token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3RcL3JldG8tZ2Vla1wvcHVibGljXC9hcGlcL2NyZWFyVG9rZW4iLCJpYXQiOjE2NTA4MDkwMzEsImV4cCI6MTY1MDgxMjYzMSwibmJmIjoxNjUwODA5MDMxLCJqdGkiOiIwV3RaV1VoT0VDdmVuSlNwIiwic3ViIjoxLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.PeqpYsPINF-2q2wi998_Q-7qBmKd0FCujzLSW0aOjjk'
     };
   },
   methods: {
@@ -124,6 +163,37 @@ export default {
       this.inputDependencia = '';
       this.inputTrabajador = {};
       this.inputTarea = {};
+      this.inputEstado = {};
+    },
+    cambiaIdTarea(id)
+    {
+      this.inputEstado.id_tarea = id;
+    },
+    registrarEstado()
+    {
+      axios.post(
+          'http://localhost/reto-geek/public/api/cambiarEstado/tareas',
+            this.inputEstado,
+          {
+            headers: {
+              Authorization: 'Bearer '+this.token,
+              'Access-Control-Allow-Origin': '*',
+              'Content-Type': 'application/json',
+            }
+          }
+        ).then((response) => {
+          if(response.data.status)
+          {
+            this.$root.$emit('bv::hide::modal','cambiarEstado');
+            this.listarDependencias();
+            alert('Estado cambiado exitosamente');
+            this.listarTareas();
+          }
+          else
+          {
+            this.errores = response.data.data;
+          }
+      })
     },
     registrarDependencia()
     {
