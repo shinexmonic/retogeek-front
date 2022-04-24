@@ -33,6 +33,12 @@ git remote add upstream 'url_copiada';
 ```
 npm install
 ```
+### cambiar la url de consumo
+
+En el componente Tareas.vue cambiar la variable host por la url a consumir ejemplo
+```
+host: 'http://localhost/reto-geek/public',
+```
 ### cargar servidor en localhost:8080
 ```
 npm run dev

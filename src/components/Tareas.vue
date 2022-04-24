@@ -170,7 +170,6 @@ export default {
   name: "Tareas",
   props: ['tipoTarea'],
   data() {
-    let token = 'jola';
     return {
       tareas: [],
       trabajadores: [],
