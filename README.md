@@ -1,6 +1,6 @@
 # [Vue Paper Dashboard](https://cristijora.github.io/vue-paper-dashboard/)
 
-# RETO DENTOS
+# RETO GEEK
 _Reto Geek._
 
 ## Comenzando 🚀
