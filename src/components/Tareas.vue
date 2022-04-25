@@ -66,7 +66,7 @@
             <label>Descripción</label>
             <textarea class="form-control" v-model="inputTarea.descripcion"></textarea>
             <label>Fecha Limite Entrega</label>
-            <input class="form-control" v-model="inputTarea.fecha_limite">
+            <input class="form-control" type="date" v-model="inputTarea.fecha_limite">
             <label>Trabajador</label>
             <select class="form-control" v-model="inputTarea.id_trabajador">
               <option v-for="trabajador in trabajadores" :value="trabajador.id">{{trabajador.nombres + ' ' + trabajador.apellidos}}</option>
@@ -181,7 +181,7 @@ export default {
       inputTarea: {},
       inputEstado: {},
       offset : 3,
-      host: 'http://localhost/reto-geek/public',
+      host: 'http://localhost/retogeek-back/public',
       pagination : {
           'total' : 0,
           'current_page' : 0,
